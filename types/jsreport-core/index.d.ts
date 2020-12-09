@@ -13,9 +13,9 @@ import * as fs from 'fs';
 declare namespace JsReport {
     type Helpers = string | { [fun: string]: (...args: any[]) => any };
 
-    type Engine = "none";
+    type Engine = 'none';
 
-    type Recipe = "html";
+    type Recipe = 'html';
 
     interface Template {
         /** template for the engine */
@@ -27,8 +27,13 @@ declare namespace JsReport {
         /** recipe used for printing previously assembled document */
         recipe: Recipe | string;
         pathToEngine?: string;
-        name?: string;
     }
+
+    interface TemplateRegistry {
+        Template: Template;
+    }
+
+    type TemplateLike = TemplateRegistry[keyof TemplateRegistry]; // Template | NamedTemplate
 
     interface RequestOptions {
         preview?: boolean;
@@ -45,7 +50,7 @@ declare namespace JsReport {
         configurable?: boolean;
         /** @default false */
         enumerable?: boolean;
-        template: Partial<Template>;
+        template: TemplateLike;
         options?: Partial<RequestOptions>;
         context?: Context;
         data?: any;
@@ -68,10 +73,7 @@ declare namespace JsReport {
     }
 
     interface ListenerCollection {
-        add(
-            type: string,
-            callback: (req: Request, res: Response, err?: any) => Promise<any> | void
-        ): void;
+        add(type: string, callback: (req: Request, res: Response, err?: any) => Promise<any> | void): void;
     }
 
     interface Collection {
@@ -194,13 +196,13 @@ declare namespace JsReport {
             numberOfWorkers?: number;
             forkOptions?: {
                 execArgv?: string | string[];
-            },
+            };
             allowedModules?: string | string[];
             timeout?: number;
             templateCache?: {
                 max: number;
                 enabled: boolean;
-            }
+            };
         };
         store?: {
             provider?: ReporterOptionsStoreProvider;
@@ -277,8 +279,6 @@ declare namespace JsReport {
     }
 }
 
-declare function JsReport(
-    config?: JsReport.Configuration
-): JsReport.Reporter;
+declare function JsReport(config?: JsReport.Configuration): JsReport.Reporter;
 
 export = JsReport;
