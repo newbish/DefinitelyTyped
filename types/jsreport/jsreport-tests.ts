@@ -1,10 +1,11 @@
 import JsReport = require('jsreport');
 import fs = require('fs');
+import JsReportTemplates = require('jsreport-templates');
 
 const jsreport = JsReport();
 
 jsreport.beforeRenderListeners.add('test', (req, res) => {
-    console.log('input', req.template.content);
+    console.log('input', (req.template as JsReport.Template).content);
 });
 
 (async () => {
